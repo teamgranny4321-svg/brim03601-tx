@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Vivek Maurya — Home Control</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Exo+2:wght@300;400;600;700&display=swap');
+
+:root {
+  --bg: #050c1a;
+  --surface: #0b1628;
+  --card: #0f1f38;
+  --border: #1a3050;
+  --accent: #00d4ff;
+  --text: #cce4ff;
+  --muted: #3a5a7a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Exo 2', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* ===== HOME SCREEN ===== */
+#homeScreen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 24px 20px;
+}
+
+.brand {
+  text-align: center;
+  padding: 20px 0 30px;
+}
+
+.brand-icon { font-size: 3rem; filter: drop-shadow(0 0 16px #00d4ff60); }
+
+.brand-name {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 2.2rem;
+  letter-spacing: 4px;
+  color: var(--accent);
+  text-shadow: 0 0 20px #00d4ff40;
+  margin-top: 8px;
+}
+
+.brand-sub {
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* Search box */
+.search-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.search-label {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--accent);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.search-row {
+  display: flex;
+  gap: 8px;
+}
+
+.ip-input {
+  flex: 1;
+  background: #060e1c;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.ip-input:focus { border-color: var(--accent); }
+.ip-input::placeholder { color: var(--muted); }
+
+.connect-btn {
+  background: linear-gradient(135deg, #00d4ff, #0099cc);
+  border: none;
+  border-radius: 10px;
+  color: #050c1a;
+  padding: 12px 18px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: transform 0.15s;
+  white-space: nowrap;
+}
+.connect-btn:active { transform: scale(0.96); }
+
+/* Saved rooms */
+.saved-label {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.rooms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 55vh;
+  overflow-y: auto;
+}
+
+.room-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+}
+.room-card:active { transform: scale(0.98); border-color: var(--accent); }
+
+.room-info { flex: 1; }
+.room-name { font-size: 1rem; font-weight: 600; color: var(--text); }
+.room-ip { font-size: 0.72rem; color: var(--muted); margin-top: 2px; letter-spacing: 1px; }
+
+.room-actions { display: flex; gap: 8px; align-items: center; }
+
+.open-btn {
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: #050c1a;
+  padding: 7px 14px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.del-btn {
+  background: none;
+  border: 1px solid #7f1d1d;
+  border-radius: 8px;
+  color: #ef4444;
+  padding: 7px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.empty-msg {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 30px;
+  letter-spacing: 1px;
+}
+
+/* ===== VIEWER SCREEN ===== */
+#viewerScreen {
+  display: none;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.viewer-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+}
+
+.back-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--accent);
+  padding: 6px 12px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.viewer-url {
+  flex: 1;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.save-btn {
+  background: none;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  color: var(--accent);
+  padding: 6px 12px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#webFrame {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: #000;
+}
+
+/* Save modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #000000aa;
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 90%;
+  max-width: 340px;
+}
+
+.modal-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.modal-input {
+  width: 100%;
+  background: #060e1c;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1rem;
+  outline: none;
+  margin-bottom: 16px;
+}
+.modal-input:focus { border-color: var(--accent); }
+
+.modal-btns { display: flex; gap: 10px; }
+
+.modal-save {
+  flex: 1;
+  background: linear-gradient(135deg, #00d4ff, #0099cc);
+  border: none;
+  border-radius: 10px;
+  color: #050c1a;
+  padding: 12px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+
+.modal-cancel {
+  flex: 1;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  padding: 12px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--card);
+  border: 1px solid var(--accent);
+  color: var(--text);
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 0.82rem;
+  z-index: 999;
+  transition: transform 0.3s;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- HOME SCREEN -->
+<div id="homeScreen">
+  <div class="brand">
+    <div class="brand-icon">⚡</div>
+    <div class="brand-name">Vivek Maurya</div>
+    <div class="brand-sub">Home Control System</div>
+  </div>
+
+  <div class="search-section">
+    <span class="search-label">🔍 ESP32 IP Address daalo</span>
+    <div class="search-row">
+      <input class="ip-input" type="text" id="ipInput" placeholder="192.168.1.105" inputmode="url">
+      <button class="connect-btn" onclick="connectToIP()">CONNECT</button>
+    </div>
+  </div>
+
+  <span class="saved-label">📋 Saved Rooms</span>
+  <div class="rooms-list" id="roomsList"></div>
+</div>
+
+<!-- VIEWER SCREEN -->
+<div id="viewerScreen">
+  <div class="viewer-bar">
+    <button class="back-btn" onclick="goBack()">← BACK</button>
+    <span class="viewer-url" id="viewerUrl"></span>
+    <button class="save-btn" onclick="showSaveModal()">💾 SAVE</button>
+  </div>
+  <iframe id="webFrame" src="about:blank" allow="same-origin"></iframe>
+</div>
+
+<!-- Save Modal -->
+<div class="modal-overlay" id="saveModal">
+  <div class="modal">
+    <div class="modal-title">💾 Room Save Karo</div>
+    <input class="modal-input" type="text" id="roomNameInput" placeholder="Room ka naam (e.g. Living Room)">
+    <div class="modal-btns">
+      <button class="modal-save" onclick="saveRoom()">SAVE</button>
+      <button class="modal-cancel" onclick="hideSaveModal()">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+let currentIP = '';
+
+// Load rooms
+function loadRooms() {
+  const rooms = getSavedRooms();
+  const list = document.getElementById('roomsList');
+  if (rooms.length === 0) {
+    list.innerHTML = '<div class="empty-msg">Koi room save nahi hai abhi<br>IP daalo aur connect karo!</div>';
+    return;
+  }
+  list.innerHTML = rooms.map((r, i) => `
+    <div class="room-card">
+      <div class="room-info">
+        <div class="room-name">${r.name}</div>
+        <div class="room-ip">${r.ip}</div>
+      </div>
+      <div class="room-actions">
+        <button class="open-btn" onclick="openRoom('${r.ip}')">OPEN</button>
+        <button class="del-btn" onclick="deleteRoom(${i})">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getSavedRooms() {
+  try { return JSON.parse(localStorage.getItem('rooms') || '[]'); }
+  catch { return []; }
+}
+
+function saveRooms(rooms) {
+  localStorage.setItem('rooms', JSON.stringify(rooms));
+}
+
+function connectToIP() {
+  let ip = document.getElementById('ipInput').value.trim();
+  if (!ip) { showToast('⚠️ IP daalo pehle!'); return; }
+  if (!ip.startsWith('http')) ip = 'http://' + ip;
+  openRoom(ip);
+}
+
+function openRoom(ip) {
+  currentIP = ip;
+  document.getElementById('viewerUrl').textContent = ip;
+  document.getElementById('webFrame').src = ip;
+  document.getElementById('homeScreen').style.display = 'none';
+  document.getElementById('viewerScreen').style.display = 'flex';
+}
+
+function goBack() {
+  document.getElementById('webFrame').src = 'about:blank';
+  document.getElementById('homeScreen').style.display = 'flex';
+  document.getElementById('viewerScreen').style.display = 'none';
+}
+
+function showSaveModal() {
+  document.getElementById('roomNameInput').value = '';
+  document.getElementById('saveModal').classList.add('show');
+}
+
+function hideSaveModal() {
+  document.getElementById('saveModal').classList.remove('show');
+}
+
+function saveRoom() {
+  const name = document.getElementById('roomNameInput').value.trim();
+  if (!name) { showToast('⚠️ Room ka naam daalo!'); return; }
+  const rooms = getSavedRooms();
+  // Check if already saved
+  const exists = rooms.findIndex(r => r.ip === currentIP);
+  if (exists !== -1) {
+    rooms[exists].name = name;
+  } else {
+    rooms.push({ name, ip: currentIP });
+  }
+  saveRooms(rooms);
+  hideSaveModal();
+  loadRooms();
+  showToast('✅ ' + name + ' save ho gaya!');
+}
+
+function deleteRoom(index) {
+  const rooms = getSavedRooms();
+  rooms.splice(index, 1);
+  saveRooms(rooms);
+  loadRooms();
+  showToast('🗑 Room delete ho gaya!');
+}
+
+// IP input par Enter press
+document.getElementById('ipInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') connectToIP();
+});
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Init
+loadRooms();
+</script>
+</body>
+</html>
